@@ -122,7 +122,7 @@ def conclusion_hipotesis(rechaza, alpha, contexto, h1_texto):
     return f"Con un nivel de significancia de {alpha:.2f} y un nivel de confianza aproximado de {nivel:.0f}%, no se rechaza la hipótesis nula. Por tanto, no existe evidencia estadística suficiente para afirmar que {h1_texto}. En el contexto del problema, esto indica que {contexto}"
 
 def show_report(texto):
-    st.markdown("### Texto listo para informe")
+    st.markdown("### conclusion para informe")
     st.markdown(f"<div class='report-box'>{texto}</div>", unsafe_allow_html=True)
     st.download_button("Descargar conclusión en TXT", data=texto, file_name="conclusion_estadistica.txt", mime="text/plain")
 
