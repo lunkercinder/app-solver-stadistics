@@ -1,9 +1,3 @@
-# app_solver_estadistica.py
-# ============================================================
-# SOLVER DE ESTADÍSTICA - VERSIÓN 2
-# Probabilidades | Intervalos | Hipótesis | Correlación | Modo informe
-# ============================================================
-
 import math
 import numpy as np
 import pandas as pd
@@ -188,9 +182,9 @@ if categoria == "Inicio":
         st.markdown("<div class='metric-card'><h3>🧪 Hipótesis</h3><p>Pruebas Z, t, proporciones, diferencias y p-valores automáticos.</p></div>", unsafe_allow_html=True)
     with c3:
         st.markdown("<div class='metric-card'><h3>📈 Correlación</h3><p>Ingreso manual o carga de archivos CSV/Excel.</p></div>", unsafe_allow_html=True)
-    st.info("Usa el menú lateral para escoger el tema. Puedes escribir porcentajes como 17% o proporciones como 0.17.")
+    st.info("Usa el menú lateral para escoger el tema. Puedes escribir porcentajes como 17% o proporciones en decimales tal que así → 0.17.")
     st.markdown("### Recomendación para el informe")
-    st.write("Cuando resuelvas una prueba de hipótesis, copia la conclusión generada automáticamente. Está escrita en formato académico y lista para pegar en Word.")
+    st.write("Cuando resuelvas tu prueba de hipótesis, copia la conclusión generada automáticamente por el programa para tu informe. Está escrita en formato académico, lista para pegar. ")
 
 elif categoria == "Probabilidades" and opcion == "Media muestral":
     st.subheader("Probabilidad con media muestral")
