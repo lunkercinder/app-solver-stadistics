@@ -404,17 +404,17 @@ def registrar_calculo(modulo, inputs_dict):
 MENU = [
     "Inicio",
     "Distribuciones de muestreo",
-    "Intervalos de confianza",
     "Pruebas de hipótesis",
     "Correlación",
-    "Base de datos",
-    "Fórmulas",
     "Indicadores Estadísticos",
     "Reglas de Conteo",
     "Teorema de Bayes",
     "Variable Aleatoria",
     "Distribuciones Probabilísticas",
-    "Intervalos de Confianza (Académicos)",
+    "Intervalos de confianza",
+    "Intervalos de Confianza_2",
+    "Base de datos",  
+    "Fórmulas",
     "Historial de Cálculos"
 ]
 
@@ -1444,8 +1444,8 @@ elif categoria == "Distribuciones Probabilísticas":
 
     render_result_box(res_label, f"{res:.10f}")
 
-elif categoria == "Intervalos de Confianza (Académicos)":
-    render_section_header("Intervalos de Confianza (Académicos)", "Lógica Z o t según la información disponible.", "📏")
+elif categoria == "Intervalos de Confianza_2":
+    render_section_header("Intervalos de Confianza_2", "Lógica Z o t según la información disponible.", "📏")
     n, m, c = render_three_inputs([
         ("Tamaño de muestra (n)", 30),
         ("Media muestral (x̄)", 100),
