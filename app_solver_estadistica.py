@@ -429,7 +429,7 @@ elif categoria == "Distribuciones de muestreo" and opcion == "Media muestral":
     st.write(f"SE = {se:.6f}")
 
     if tipo in ["P(X̄ < c)", "P(X̄ > c)"]:
-        c = parse_num(st.text_input("Valor c", "52"))
+        c = parse_num(st.text_input("PROMEDIO MUESTRAL", "52"))
         if st.button("Calcular", key="muest_media_1"):
             z = (c - mu) / se
             p_menor = phi(z)
