@@ -1,6 +1,7 @@
 import math
 import os
 import json
+import statistics
 from collections import Counter
 
 import numpy as np
@@ -30,8 +31,20 @@ st.markdown(
     <style>
     .main-title {font-size: 42px; font-weight: 800; margin-bottom: 0px;}
     .sub-title {font-size: 18px; color: #9CA3AF; margin-bottom: 25px;}
-    .metric-card {background-color: rgba(120, 120, 120, 0.10); padding: 18px; border-radius: 16px; border: 1px solid rgba(150, 150, 150, 0.25); margin-bottom: 12px;}
-    .report-box {background-color: rgba(34, 197, 94, 0.10); padding: 18px; border-radius: 16px; border: 1px solid rgba(34, 197, 94, 0.35); margin-top: 15px;}
+    .metric-card {
+        background-color: rgba(120, 120, 120, 0.10);
+        padding: 18px;
+        border-radius: 16px;
+        border: 1px solid rgba(150, 150, 150, 0.25);
+        margin-bottom: 12px;
+    }
+    .report-box {
+        background-color: rgba(34, 197, 94, 0.10);
+        padding: 18px;
+        border-radius: 16px;
+        border: 1px solid rgba(34, 197, 94, 0.35);
+        margin-top: 15px;
+    }
     .glass-card {
         background: rgba(15, 23, 42, 0.45);
         backdrop-filter: blur(12px);
@@ -219,7 +232,7 @@ def render_section_header(title, subtitle, icon="📊"):
     )
 
 # ============================================================
-# FUNCIONES DE LOS COMPAÑEROS ADAPTADAS
+# FUNCIONES ADICIONALES DEL OTRO CÓDIGO
 # ============================================================
 
 def calcular_moda(datos):
@@ -311,8 +324,7 @@ def registrar_calculo(modulo, inputs_dict):
         return False
 
 # ============================================================
-# SIDEBAR UNIFICADO
-# PRIMERO ELLOS, LUEGO LOS TUYOS
+# SIDEBAR ORDENADO
 # ============================================================
 
 st.sidebar.title("📊 Menú principal")
@@ -320,21 +332,20 @@ st.sidebar.title("📊 Menú principal")
 categoria = st.sidebar.radio(
     "Sección",
     [
-        "Panel de Control",
-        "Indicadores Estadísticos",
-        "Reglas de Conteo",
-        "Teorema de Bayes",
-        "Variable Aleatoria",
-        "Distribuciones Probabilísticas",
-        "Intervalos de Confianza (Académicos)",
-        "Historial de Cálculos",
         "Inicio",
         "Distribuciones de muestreo",
         "Intervalos de confianza",
         "Pruebas de hipótesis",
         "Correlación",
         "Base de datos",
-        "Fórmulas"
+        "Fórmulas",
+        "Indicadores Estadísticos",
+        "Reglas de Conteo",
+        "Teorema de Bayes",
+        "Variable Aleatoria",
+        "Distribuciones Probabilísticas",
+        "Intervalos de Confianza (Académicos)",
+        "Historial de Cálculos"
     ]
 )
 
@@ -352,438 +363,55 @@ elif categoria == "Base de datos":
     opcion = st.sidebar.selectbox("Tema", ["Exploración básica", "Comparación por grupo"])
 
 st.markdown("<div class='main-title'>Solver Estadístico Unificado</div>", unsafe_allow_html=True)
-st.markdown("<div class='sub-title'>Módulos académicos, distribuciones de muestreo, pruebas de hipótesis, correlación y análisis de bases de datos.</div>", unsafe_allow_html=True)
+st.markdown("<div class='sub-title'>Módulos académicos, distribuciones de muestreo, pruebas de hipótesis, evaluación y análisis de bases de datos.</div>", unsafe_allow_html=True)
 
 # ============================================================
-# 1) MÓDULOS DE ELLOS
+# INICIO ÚNICO
 # ============================================================
 
-if categoria == "Panel de Control":
-    st.markdown('<h1 class="hero-title">Sistema de Resolución Estadística</h1>', unsafe_allow_html=True)
-    st.markdown('<p style="color: #64748b; margin-bottom: 30px;">Plataforma unificada para análisis estadístico, muestreo, hipótesis y exploración de datos.</p>', unsafe_allow_html=True)
-
-    col1, col2 = st.columns(2)
-    with col1:
-        st.markdown("<div class='glass-card'><h3>Indicadores y conteo</h3><p>Incluye tendencia central, dispersión, posición y reglas de conteo.</p></div>", unsafe_allow_html=True)
-    with col2:
-        st.markdown("<div class='glass-card'><h3>Muestreo e inferencia</h3><p>Incluye distribuciones de muestreo, intervalos y pruebas de hipótesis.</p></div>", unsafe_allow_html=True)
-
-    col3, col4 = st.columns(2)
-    with col3:
-        st.markdown("<div class='glass-card'><h3>Datos y correlación</h3><p>Permite cargar archivos CSV/Excel y generar análisis automáticos.</p></div>", unsafe_allow_html=True)
-    with col4:
-        st.markdown("<div class='glass-card'><h3>Conclusiones listas</h3><p>Genera textos descargables para informe académico.</p></div>", unsafe_allow_html=True)
-
-elif categoria == "Indicadores Estadísticos":
-    render_section_header("Indicadores Estadísticos", "Medidas de tendencia, dispersión, forma y posición, con datos manuales o archivo.", "🧮")
-    st.markdown("<div class='glass-card'>", unsafe_allow_html=True)
-
-    sub = st.selectbox("Seleccione categoría", ["Tendencia Central", "Dispersión", "Forma (Pearson)", "Posición"])
-    fuente = st.radio("Fuente de datos", ["Datos manuales", "Archivo CSV o Excel"], horizontal=True)
-
-    if fuente == "Datos manuales":
-        if sub in ["Tendencia Central", "Dispersión", "Posición"]:
-            d_str = st.text_input("Ingrese datos separados por coma", "12, 14, 10, 15, 14, 18")
-            try:
-                datos = sorted([float(x) for x in d_str.replace(",", " ").split() if x.strip()])
-                if len(datos) >= 2:
-                    if sub == "Tendencia Central":
-                        m = statistics.mean(datos)
-                        med = statistics.median(datos)
-                        modas = calcular_moda(datos)
-                        c1, c2, c3 = st.columns(3)
-                        c1.metric("Media", f"{m:.4f}")
-                        c2.metric("Mediana", f"{med:.4f}")
-                        c3.metric("Moda(s)", ", ".join(f"{x:g}" for x in modas))
-                    elif sub == "Dispersión":
-                        t_d = st.radio("Contexto", ["Muestra", "Población"], horizontal=True)
-                        m = statistics.mean(datos)
-                        dev = statistics.pstdev(datos) if t_d == "Población" else statistics.stdev(datos)
-                        c1, c2, c3 = st.columns(3)
-                        c1.metric("Varianza", f"{dev**2:.4f}")
-                        c2.metric("Desv. Est.", f"{dev:.4f}")
-                        c3.metric("CV", f"{(dev/m*100):.2f}%")
-                    elif sub == "Posición":
-                        pk = st.number_input("Percentil (k)", 1, 99, 90)
-                        st.metric(f"P{pk}", f"{calcular_percentil(datos, pk):.4f}")
-            except Exception as e:
-                st.warning(f"Revisa los datos ingresados. {e}")
-
-        elif sub == "Forma (Pearson)":
-            c1, c2, c3 = st.columns(3)
-            m = c1.number_input("Media", value=15.0)
-            mo = c2.number_input("Moda", value=14.0)
-            s = c3.number_input("Desviación", min_value=0.1, value=2.0)
-            asimetria = (3 * (m - mo)) / s
-            st.metric("Asimetría", f"{asimetria:.4f}")
-
-    else:
-        archivo = st.file_uploader("Sube un archivo CSV o Excel", type=["csv", "xlsx", "xls"], key="indicadores_file")
-        if archivo is not None:
-            try:
-                df = leer_csv_excel(archivo)
-                st.success("Archivo cargado correctamente.")
-                st.dataframe(df.head())
-
-                numericas = df.select_dtypes(include=["int64", "float64"]).columns.tolist()
-                categoricas = df.columns.tolist()
-
-                if sub in ["Tendencia Central", "Dispersión", "Posición"]:
-                    if len(numericas) == 0:
-                        st.error("No hay columnas numéricas para analizar.")
-                    else:
-                        col_num = st.selectbox("Selecciona una variable numérica", numericas)
-                        datos = df[col_num].dropna().astype(float).tolist()
-                        datos_ordenados = sorted(datos)
-
-                        if sub == "Tendencia Central":
-                            m = statistics.mean(datos)
-                            med = statistics.median(datos)
-                            modas = calcular_moda(datos)
-                            c1, c2, c3 = st.columns(3)
-                            c1.metric("Media", f"{m:.4f}")
-                            c2.metric("Mediana", f"{med:.4f}")
-                            c3.metric("Moda(s)", ", ".join(f"{x:g}" for x in modas[:10]))
-
-                        elif sub == "Dispersión":
-                            t_d = st.radio("Contexto", ["Muestra", "Población"], horizontal=True, key="disp_arch")
-                            m = statistics.mean(datos)
-                            dev = statistics.pstdev(datos) if t_d == "Población" else statistics.stdev(datos)
-                            c1, c2, c3 = st.columns(3)
-                            c1.metric("Varianza", f"{dev**2:.4f}")
-                            c2.metric("Desv. Est.", f"{dev:.4f}")
-                            c3.metric("CV", f"{(dev/m*100):.2f}%")
-
-                        elif sub == "Posición":
-                            pk = st.number_input("Percentil (k)", 1, 99, 90, key="pos_arch")
-                            st.metric(f"P{pk}", f"{calcular_percentil(datos_ordenados, pk):.4f}")
-
-                elif sub == "Forma (Pearson)":
-                    if len(numericas) == 0:
-                        st.error("No hay columnas numéricas para analizar.")
-                    else:
-                        col_num = st.selectbox("Selecciona una variable numérica", numericas, key="forma_arch")
-                        datos = df[col_num].dropna().astype(float).tolist()
-                        media = statistics.mean(datos)
-                        modas = calcular_moda(datos)
-                        moda = modas[0]
-                        desv = statistics.stdev(datos) if len(datos) > 1 else 0
-                        if desv == 0:
-                            st.warning("La desviación es 0, no se puede calcular asimetría.")
-                        else:
-                            asimetria = (3 * (media - moda)) / desv
-                            st.metric("Asimetría de Pearson", f"{asimetria:.4f}")
-
-                st.markdown("### Gráficos")
-                tipo_graf = st.selectbox("Tipo de gráfico", ["Gráfico de barras", "Gráfico de torta"])
-                col_cat = st.selectbox("Variable categórica para graficar", categoricas)
-
-                freq = df[col_cat].astype(str).value_counts().reset_index()
-                freq.columns = [col_cat, "Frecuencia"]
-
-                if tipo_graf == "Gráfico de barras":
-                    fig, ax = plt.subplots(figsize=(8, 5))
-                    ax.bar(freq[col_cat], freq["Frecuencia"])
-                    ax.set_title(f"Frecuencia de {col_cat}")
-                    ax.set_xlabel(col_cat)
-                    ax.set_ylabel("Frecuencia")
-                    plt.xticks(rotation=45, ha="right")
-                    plt.tight_layout()
-                    st.pyplot(fig)
-                else:
-                    fig, ax = plt.subplots(figsize=(7, 7))
-                    ax.pie(freq["Frecuencia"], labels=freq[col_cat], autopct="%1.1f%%", startangle=90)
-                    ax.set_title(f"Distribución de {col_cat}")
-                    st.pyplot(fig)
-
-            except Exception as e:
-                st.error(f"No se pudo procesar el archivo: {e}")
-
-    st.markdown("</div>", unsafe_allow_html=True)
-
-elif categoria == "Reglas de Conteo":
-    render_section_header("Reglas de Conteo", "Permutaciones, variaciones y combinaciones.", "🔢")
-    st.markdown("<div class='glass-card'>", unsafe_allow_html=True)
-
-    mod = st.selectbox(
-        "Modelo de conteo",
-        [
-            "Permutación (Sin repetición)",
-            "Permutación con repetición",
-            "Combinación (Sin repetición)",
-            "Combinación con repetición",
-            "Variación (Sin repetición)",
-            "Variación con repetición"
-        ]
+if categoria == "Inicio":
+    st.markdown('<h1 class="hero-title">Solver Estadístico Unificado</h1>', unsafe_allow_html=True)
+    st.markdown(
+        '<p style="color: #64748b; margin-bottom: 30px;">'
+        'Plataforma unificada para análisis estadístico, indicadores, conteo, muestreo, '
+        'pruebas de hipótesis, correlación y exploración de datos.'
+        '</p>',
+        unsafe_allow_html=True
     )
 
-    if "Permutación (Sin repetición)" in mod:
-        st.latex(r"P(n,r) = \frac{n!}{(n-r)!}")
-    elif "Permutación con repetición" in mod:
-        st.latex(r"P'_n(r) = n^r")
-    elif "Combinación (Sin repetición)" in mod:
-        st.latex(r"C_n^r = \binom{n}{r} = \frac{n!}{r!(n-r)!}")
-    elif "Combinación con repetición" in mod:
-        st.latex(r"CR_n^r = \binom{n+r-1}{r}")
-    elif "Variación (Sin repetición)" in mod:
-        st.latex(r"V_n^r = \frac{n!}{(n-r)!}")
-    elif "Variación con repetición" in mod:
-        st.latex(r"VR_n^r = n^r")
-
     c1, c2 = st.columns(2)
     with c1:
-        n = st.number_input("n", 1, value=10)
+        st.markdown(
+            "<div class='glass-card'><h3>📘 Módulos principales</h3>"
+            "<p>Distribuciones de muestreo, intervalos de confianza, pruebas de hipótesis, correlación, base de datos y fórmulas.</p></div>",
+            unsafe_allow_html=True
+        )
     with c2:
-        max_r = n if "(Sin repetición)" in mod else None
-        r = st.number_input("r", 0, max_value=max_r, value=min(3, n))
+        st.markdown(
+            "<div class='glass-card'><h3>🧠 Módulos académicos adicionales</h3>"
+            "<p>Indicadores estadísticos, reglas de conteo, teorema de Bayes, variable aleatoria, distribuciones probabilísticas e historial.</p></div>",
+            unsafe_allow_html=True
+        )
 
-    res = 0
-    if "Permutación (Sin repetición)" in mod:
-        res = variacion_sin_rep(n, r)
-    elif "Permutación con repetición" in mod:
-        res = variacion_con_rep(n, r)
-    elif "Combinación con repetición" in mod:
-        res = combinacion_con_rep(n, r)
-    elif "Combinación (Sin repetición)" in mod:
-        res = combinacion_sin_rep(n, r)
-    elif "Variación con repetición" in mod:
-        res = variacion_con_rep(n, r)
-    else:
-        res = variacion_sin_rep(n, r)
-
-    st.metric("Resultado", f"{res:,}")
-    st.markdown("</div>", unsafe_allow_html=True)
-
-elif categoria == "Teorema de Bayes":
-    render_section_header("Teorema de Bayes", "Probabilidades a posteriori.", "🧠")
-    nh = st.number_input("Número de hipótesis", 2, 5, 2)
-    st.markdown("<div class='glass-card'>", unsafe_allow_html=True)
-
-    p1, p2 = [], []
-    for i in range(nh):
-        c1, c2 = st.columns(2)
-        p1.append(c1.number_input(f"P(A{i+1})", 0.0, 1.0, 1.0/nh, key=f"bayes_a_{i}"))
-        p2.append(c2.number_input(f"P(B|A{i+1})", 0.0, 1.0, 0.5, key=f"bayes_b_{i}"))
-
-    if abs(sum(p1) - 1.0) < 1e-4:
-        pb = sum(a * b for a, b in zip(p1, p2))
-        st.metric("P(B)", f"{pb:.4f}")
-    else:
-        st.warning("Las probabilidades P(Ai) deben sumar 1.")
-    st.markdown("</div>", unsafe_allow_html=True)
-
-elif categoria == "Variable Aleatoria":
-    render_section_header("Variable Aleatoria", "Momentos y distribución discreta.", "🎲")
-    nv = st.number_input("Número de valores", 1, 20, 3)
-    st.markdown("<div class='glass-card'>", unsafe_allow_html=True)
-
-    vx, vp = [], []
-    for i in range(nv):
-        c1, c2 = st.columns(2)
-        vx.append(c1.number_input(f"Valor x_{i+1}", value=float(i), key=f"va_x_{i}"))
-        default_p = 0.0
-        if i == nv - 1:
-            suma_previa = sum(vp)
-            default_p = max(0.0, 1.0 - suma_previa)
-        else:
-            default_p = 1.0 / nv
-        vp.append(c2.number_input(f"Probabilidad P(x_{i+1})", 0.0, 1.0, default_p, format="%.4f", key=f"va_p_{i}"))
-
-    ex = sum(x * p for x, p in zip(vx, vp))
-    ex2 = sum((x**2) * p for x, p in zip(vx, vp))
-    var_x = max(0.0, ex2 - ex**2)
-    sigma_x = math.sqrt(var_x)
-
-    indices = list(range(1, nv + 1))
-    ei = sum(i * p for i, p in zip(indices, vp))
-    ei2 = sum((i**2) * p for i, p in zip(indices, vp))
-    var_i = max(0.0, ei2 - ei**2)
-    sigma_i = math.sqrt(var_i)
-
-    df_data = {
-        "i": indices,
-        "x": vx,
-        "P(x)": vp,
-        "x·P(x)": [x * p for x, p in zip(vx, vp)],
-        "i·P(x)": [i * p for i, p in zip(indices, vp)],
-        "x²·P(x)": [(x**2) * p for x, p in zip(vx, vp)],
-        "i²·P(x)": [(i**2) * p for i, p in zip(indices, vp)]
-    }
-    df_va = pd.DataFrame(df_data)
-    st.dataframe(df_va)
-
-    c1, c2 = st.columns(2)
-    with c1:
-        st.metric("Esperanza E(X)", f"{ex:.6f}")
-        st.metric("Varianza Var(X)", f"{var_x:.6f}")
-        st.metric("Desv. Estándar σ", f"{sigma_x:.6f}")
-    with c2:
-        st.metric("Esperanza E(i)", f"{ei:.6f}")
-        st.metric("Varianza Var(i)", f"{var_i:.6f}")
-        st.metric("Desv. Estándar σ(i)", f"{sigma_i:.6f}")
-
-    st.markdown("</div>", unsafe_allow_html=True)
-
-elif categoria == "Distribuciones Probabilísticas":
-    render_section_header("Distribuciones Probabilísticas", "Normal, Binomial, Poisson y Exponencial.", "📈")
-    st.markdown("<div class='glass-card'>", unsafe_allow_html=True)
-
-    dt = st.selectbox("Modelo", ["Normal", "Binomial", "Poisson", "Exponencial"])
-    tipo_calc = st.selectbox("Tipo de probabilidad", ["Puntual / Densidad", "Acumulada Inferior (P ≤ x)", "Acumulada Superior (P > x)", "Intervalo (P [a, b])"])
-
-    res = 0.0
-    res_label = "Resultado"
-
-    c1, c2 = st.columns(2)
-
-    if dt == "Normal":
-        mu = c1.number_input("Media (μ)", value=0.0)
-        sigma = c2.number_input("Desv. Estándar (σ)", 0.001, value=1.0)
-        if tipo_calc == "Intervalo (P [a, b])":
-            a = c1.number_input("Límite inferior (a)", value=-1.0)
-            b = c2.number_input("Límite superior (b)", value=1.0)
-            res = cdf_normal_estandar((b - mu) / sigma) - cdf_normal_estandar((a - mu) / sigma)
-            res_label = f"P({a} ≤ X ≤ {b})"
-        else:
-            x = st.number_input("Valor (x)", value=0.0)
-            if "Puntual" in tipo_calc:
-                res = pdf_normal(x, mu, sigma)
-                res_label = f"f({x}) [Densidad]"
-            elif "Inferior" in tipo_calc:
-                res = cdf_normal_estandar((x - mu) / sigma)
-                res_label = f"P(X ≤ {x})"
-            else:
-                res = 1 - cdf_normal_estandar((x - mu) / sigma)
-                res_label = f"P(X > {x})"
-
-    elif dt == "Binomial":
-        n = c1.number_input("Ensayos (n)", 1, value=10)
-        p = c2.number_input("Prob. éxito (p)", 0.0, 1.0, 0.5)
-        if tipo_calc == "Intervalo (P [a, b])":
-            a = c1.number_input("Mínimo éxitos (a)", 0, n, 0)
-            b = c2.number_input("Máximo éxitos (b)", 0, n, n)
-            res = sum(probabilidad_binomial(i, n, p) for i in range(int(a), int(b) + 1))
-            res_label = f"P({a} ≤ X ≤ {b})"
-        else:
-            k = st.number_input("Éxitos (k)", 0, n, 0)
-            if "Puntual" in tipo_calc:
-                res = probabilidad_binomial(int(k), n, p)
-                res_label = f"P(X = {k})"
-            elif "Inferior" in tipo_calc:
-                res = sum(probabilidad_binomial(i, n, p) for i in range(int(k) + 1))
-                res_label = f"P(X ≤ {k})"
-            else:
-                res = 1 - sum(probabilidad_binomial(i, n, p) for i in range(int(k) + 1))
-                res_label = f"P(X > {k})"
-
-    elif dt == "Poisson":
-        lam = c1.number_input("Tasa promedio (λ)", 0.001, value=5.0)
-        if tipo_calc == "Intervalo (P [a, b])":
-            a = c1.number_input("Mínimo (a)", 0)
-            b = c2.number_input("Máximo (b)", 0)
-            res = sum(probabilidad_poisson(i, lam) for i in range(int(a), int(b) + 1))
-            res_label = f"P({a} ≤ X ≤ {b})"
-        else:
-            k = st.number_input("Ocurrencias (k)", 0)
-            if "Puntual" in tipo_calc:
-                res = probabilidad_poisson(int(k), lam)
-                res_label = f"P(X = {k})"
-            elif "Inferior" in tipo_calc:
-                res = sum(probabilidad_poisson(i, lam) for i in range(int(k) + 1))
-                res_label = f"P(X ≤ {k})"
-            else:
-                res = 1 - sum(probabilidad_poisson(i, lam) for i in range(int(k) + 1))
-                res_label = f"P(X > {k})"
-
-    elif dt == "Exponencial":
-        lam = c1.number_input("Tasa (λ)", 0.001, value=1.0)
-        if tipo_calc == "Intervalo (P [a, b])":
-            a = c1.number_input("Inicio (a)", 0.0)
-            b = c2.number_input("Fin (b)", 0.0)
-            res = math.exp(-lam * a) - math.exp(-lam * b)
-            res_label = f"P({a} ≤ X ≤ {b})"
-        else:
-            x = st.number_input("Valor (x)", 0.0)
-            if "Puntual" in tipo_calc:
-                res = lam * math.exp(-lam * x)
-                res_label = f"f({x}) [Densidad]"
-            elif "Inferior" in tipo_calc:
-                res = 1 - math.exp(-lam * x)
-                res_label = f"P(X ≤ {x})"
-            else:
-                res = math.exp(-lam * x)
-                res_label = f"P(X > {x})"
-
-    st.metric(res_label, f"{res:.10f}")
-    st.markdown("</div>", unsafe_allow_html=True)
-
-elif categoria == "Intervalos de Confianza (Académicos)":
-    render_section_header("Intervalos de Confianza (Académicos)", "Lógica Z o t según la información disponible.", "📏")
-    st.markdown("<div class='glass-card'>", unsafe_allow_html=True)
-
-    c1, c2 = st.columns(2)
-    with c1:
-        n = st.number_input("Tamaño de muestra (n)", 2, value=30, key="acad_n")
-        m = st.number_input("Media muestral (x̄)", value=100.0, key="acad_m")
-        c = st.slider("Nivel de confianza", 0.80, 0.99, 0.95, 0.01, key="acad_c")
-    with c2:
-        sigma_conocida = st.radio("¿Conoce σ?", ["Sí, es conocida (σ)", "No, usar muestral (s)"], index=1, key="acad_sigma")
-        label_s = "Desviación estándar (σ)" if "Sí" in sigma_conocida else "Desviación estándar (s)"
-        s = st.number_input(label_s, 0.01, value=15.0, key="acad_s")
-
-    es_sigma = "Sí" in sigma_conocida
-    if es_sigma:
-        v_critico = get_z_value(c)
-        razon = "Se utiliza Z porque la desviación estándar poblacional es conocida."
-    else:
-        if n >= 30:
-            v_critico = get_z_value(c)
-            razon = f"Se utiliza Z como aproximación porque n={n} y n ≥ 30."
-        else:
-            v_critico = get_t_value(c, n - 1)
-            razon = f"Se utiliza t de Student porque σ es desconocida y n={n} es pequeña."
-
-    err = v_critico * (s / math.sqrt(n))
-    li, ls = m - err, m + err
-
-    st.info(razon)
-    c1, c2, c3 = st.columns(3)
-    c1.metric("Valor crítico", f"{v_critico:.4f}")
-    c2.metric("Margen de error", f"{err:.4f}")
-    c3.metric("Error estándar", f"{(s/math.sqrt(n)):.4f}")
-    st.success(f"IC = [{li:.4f}, {ls:.4f}]")
-    st.markdown("</div>", unsafe_allow_html=True)
-
-elif categoria == "Historial de Cálculos":
-    render_section_header("Historial de Cálculos", "Registro local de cálculos realizados.", "📜")
-    path = "historial_calculos.json"
-    if os.path.exists(path):
-        with open(path, "r", encoding="utf-8") as f:
-            registros = [json.loads(line) for line in f]
-        for reg in reversed(registros):
-            with st.expander(f"🕒 {reg['fecha']} - {reg['modulo']}"):
-                st.json(reg["inputs"])
-        if st.button("🗑️ Borrar historial"):
-            os.remove(path)
-            st.rerun()
-    else:
-        st.info("No hay historial guardado.")
-
-# ============================================================
-# 2) TUS MÓDULOS
-# ============================================================
-
-elif categoria == "Inicio":
-    c1, c2, c3 = st.columns(3)
-    with c1:
-        st.markdown("<div class='metric-card'><h3>📌 Distribuciones de muestreo</h3><p>Media muestral y proporción muestral con distribución normal.</p></div>", unsafe_allow_html=True)
-    with c2:
-        st.markdown("<div class='metric-card'><h3>🧪 Hipótesis</h3><p>Pruebas Z, t, proporciones, diferencias y p-valores automáticos.</p></div>", unsafe_allow_html=True)
+    c3, c4 = st.columns(2)
     with c3:
-        st.markdown("<div class='metric-card'><h3>📈 Correlación</h3><p>Ingreso manual o carga de archivos CSV/Excel.</p></div>", unsafe_allow_html=True)
-    st.info("Usa el menú lateral para escoger el tema. Puedes escribir porcentajes como 17% o proporciones decimales como 0.17.")
-    st.markdown("### Recomendación para el informe")
-    st.write("Cuando resuelvas una prueba de hipótesis, puedes descargar una conclusión lista para pegar en tu informe.")
+        st.markdown(
+            "<div class='glass-card'><h3>📂 Trabajo con archivos</h3>"
+            "<p>Puedes subir archivos CSV o Excel para análisis, correlaciones, exploración básica e indicadores con gráficos.</p></div>",
+            unsafe_allow_html=True
+        )
+    with c4:
+        st.markdown(
+            "<div class='glass-card'><h3>📝 Salidas para informe</h3>"
+            "<p>El sistema genera conclusiones descargables y resultados listos para usar en trabajos académicos.</p></div>",
+            unsafe_allow_html=True
+        )
+
+    st.info("Usa el menú lateral para navegar por todos los módulos del sistema.")
+
+# ============================================================
+# TUS MÓDULOS PRINCIPALES
+# ============================================================
 
 elif categoria == "Distribuciones de muestreo" and opcion == "Media muestral":
     st.subheader("Distribución de muestreo de la media muestral")
@@ -794,6 +422,7 @@ elif categoria == "Distribuciones de muestreo" and opcion == "Media muestral":
         sigma = parse_num(st.text_input("σ desviación poblacional", "10"))
     with col3:
         n = int(parse_num(st.text_input("n tamaño de muestra", "36")))
+
     tipo = st.selectbox("Tipo de probabilidad", ["P(X̄ < c)", "P(X̄ > c)", "P(a < X̄ < b)"])
     se = sigma / math.sqrt(n)
     st.latex(r"SE = \frac{\sigma}{\sqrt{n}}")
@@ -878,6 +507,7 @@ elif categoria == "Distribuciones de muestreo" and opcion == "Proporción muestr
 
 elif categoria == "Intervalos de confianza":
     st.subheader(f"Intervalo de confianza - {opcion}")
+
     if opcion in ["Media con Z", "Media con t"]:
         col1, col2, col3, col4 = st.columns(4)
         with col1:
@@ -1325,7 +955,7 @@ elif categoria == "Base de datos" and opcion == "Comparación por grupo":
                 fig, ax = plt.subplots(figsize=(8, 5))
                 grupos = [grupo[col_num].dropna().values for _, grupo in df.groupby(col_grupo)]
                 labels = [str(g) for g in df.groupby(col_grupo).groups.keys()]
-                ax.boxplot(grupos, labels=labels)
+                ax.boxplot(grupos, tick_labels=labels)
                 ax.set_title(f"{col_num} por {col_grupo}")
                 ax.set_xlabel(col_grupo)
                 ax.set_ylabel(col_num)
@@ -1334,24 +964,540 @@ elif categoria == "Base de datos" and opcion == "Comparación por grupo":
             st.error(f"No se pudo leer el archivo: {e}")
 
 elif categoria == "Fórmulas":
-    st.subheader("Formulario rápido")
+    st.subheader("Formulario completo del programa")
+
+    st.markdown("## 1. Distribuciones de muestreo")
+
     st.markdown("### Media muestral")
-    st.latex(r"SE = \frac{\sigma}{\sqrt{n}}")
+    st.latex(r"\mu_{\bar{x}} = \mu")
+    st.latex(r"SE_{\bar{x}} = \frac{\sigma}{\sqrt{n}}")
     st.latex(r"z = \frac{\bar{x}-\mu}{\sigma/\sqrt{n}}")
+    st.latex(r"P(\bar{X}<c), \quad P(\bar{X}>c), \quad P(a<\bar{X}<b)")
 
     st.markdown("### Proporción muestral")
-    st.latex(r"SE = \sqrt{\frac{p(1-p)}{n}}")
+    st.latex(r"\mu_{\hat{p}} = p")
+    st.latex(r"SE_{\hat{p}} = \sqrt{\frac{p(1-p)}{n}}")
     st.latex(r"z = \frac{\hat{p}-p}{\sqrt{p(1-p)/n}}")
+    st.latex(r"P(\hat{p}<c), \quad P(\hat{p}>c), \quad P(a<\hat{p}<b)")
 
-    st.markdown("### Intervalos")
-    st.latex(r"IC_\mu = \bar{x} \pm z^* \frac{\sigma}{\sqrt{n}}")
-    st.latex(r"IC_p = \hat{p} \pm z^* \sqrt{\frac{\hat{p}(1-\hat{p})}{n}}")
+    st.markdown("## 2. Intervalos de confianza")
 
-    st.markdown("### Diferencia de medias")
-    st.latex(r"SE = \sqrt{\frac{s_1^2}{n_1}+\frac{s_2^2}{n_2}}")
-    st.latex(r"z = \frac{(\bar{x}_1-\bar{x}_2)-d_0}{SE}")
+    st.markdown("### Media con Z")
+    st.latex(r"IC_\mu = \bar{x} \pm z_{\alpha/2}\frac{\sigma}{\sqrt{n}}")
+
+    st.markdown("### Media con t")
+    st.latex(r"IC_\mu = \bar{x} \pm t_{\alpha/2,\,n-1}\frac{s}{\sqrt{n}}")
+
+    st.markdown("### Proporción con Z")
+    st.latex(r"IC_p = \hat{p} \pm z_{\alpha/2}\sqrt{\frac{\hat{p}(1-\hat{p})}{n}}")
+
+    st.markdown("## 3. Pruebas de hipótesis")
+
+    st.markdown("### Media con Z")
+    st.latex(r"z = \frac{\bar{x}-\mu_0}{\sigma/\sqrt{n}}")
+
+    st.markdown("### Media con t")
+    st.latex(r"t = \frac{\bar{x}-\mu_0}{s/\sqrt{n}}")
+    st.latex(r"gl = n-1")
+
+    st.markdown("### Proporción con Z")
+    st.latex(r"z = \frac{\hat{p}-p_0}{\sqrt{p_0(1-p_0)/n}}")
+
+    st.markdown("### Diferencia de medias con Z")
+    st.latex(r"z = \frac{(\bar{x}_1-\bar{x}_2)-d_0}{\sqrt{\frac{\sigma_1^2}{n_1}+\frac{\sigma_2^2}{n_2}}}")
+
+    st.markdown("### Diferencia de medias con t (Welch)")
+    st.latex(r"t = \frac{(\bar{x}_1-\bar{x}_2)-d_0}{\sqrt{\frac{s_1^2}{n_1}+\frac{s_2^2}{n_2}}}")
+    st.latex(r"gl \approx \frac{\left(\frac{s_1^2}{n_1}+\frac{s_2^2}{n_2}\right)^2}{\frac{\left(\frac{s_1^2}{n_1}\right)^2}{n_1-1}+\frac{\left(\frac{s_2^2}{n_2}\right)^2}{n_2-1}}")
+
+    st.markdown("### Diferencia de medias con t pooled")
+    st.latex(r"s_p^2 = \frac{(n_1-1)s_1^2+(n_2-1)s_2^2}{n_1+n_2-2}")
+    st.latex(r"t = \frac{(\bar{x}_1-\bar{x}_2)-d_0}{s_p\sqrt{\frac{1}{n_1}+\frac{1}{n_2}}}")
+    st.latex(r"gl = n_1+n_2-2")
 
     st.markdown("### Muestras pareadas")
+    st.latex(r"d_i = X_{después,i} - X_{antes,i}")
+    st.latex(r"\bar{d} = \frac{\sum d_i}{n}")
     st.latex(r"t = \frac{\bar{d}-d_0}{s_d/\sqrt{n}}")
+    st.latex(r"gl = n-1")
+
+    st.markdown("### Diferencia de proporciones")
+    st.latex(r"\hat{p}_1 = \frac{x_1}{n_1}, \quad \hat{p}_2 = \frac{x_2}{n_2}")
+    st.latex(r"\hat{p} = \frac{x_1+x_2}{n_1+n_2}")
+    st.latex(r"\hat{q} = 1-\hat{p}")
+    st.latex(r"z = \frac{(\hat{p}_1-\hat{p}_2)-d_0}{\sqrt{\hat{p}\hat{q}\left(\frac{1}{n_1}+\frac{1}{n_2}\right)}}")
+
+    st.markdown("## 4. Correlación de Pearson")
+    st.latex(r"r = \frac{\sum (x_i-\bar{x})(y_i-\bar{y})}{\sqrt{\sum (x_i-\bar{x})^2 \sum (y_i-\bar{y})^2}}")
+
+    st.markdown("## 5. Indicadores estadísticos")
+
+    st.markdown("### Media")
+    st.latex(r"\bar{x} = \frac{1}{n}\sum_{i=1}^{n} x_i")
+
+    st.markdown("### Mediana")
+    st.latex(r"\text{Mediana} = \text{valor central de los datos ordenados}")
+
+    st.markdown("### Moda")
+    st.latex(r"\text{Moda} = \text{valor con mayor frecuencia}")
+
+    st.markdown("### Varianza poblacional")
+    st.latex(r"\sigma^2 = \frac{\sum (x_i-\mu)^2}{N}")
+
+    st.markdown("### Varianza muestral")
+    st.latex(r"s^2 = \frac{\sum (x_i-\bar{x})^2}{n-1}")
+
+    st.markdown("### Desviación estándar")
+    st.latex(r"\sigma = \sqrt{\sigma^2}, \qquad s = \sqrt{s^2}")
+
+    st.markdown("### Coeficiente de variación")
+    st.latex(r"CV = \frac{s}{\bar{x}} \times 100\%")
+
+    st.markdown("### Asimetría de Pearson")
+    st.latex(r"As = \frac{3(\bar{x}-Mo)}{s}")
+
+    st.markdown("## 6. Reglas de conteo")
+
+    st.markdown("### Permutación lineal sin repetición")
+    st.latex(r"P(n)=n!")
+
+    st.markdown("### Permutación con repetición de elementos idénticos")
+    st.latex(r"P = \frac{n!}{n_1!n_2!\cdots n_k!}")
+
+    st.markdown("### Variación sin repetición")
+    st.latex(r"V(n,r)=\frac{n!}{(n-r)!}")
+
+    st.markdown("### Variación con repetición")
+    st.latex(r"VR(n,r)=n^r")
+
+    st.markdown("### Combinación sin repetición")
+    st.latex(r"C(n,r)=\binom{n}{r}=\frac{n!}{r!(n-r)!}")
+
+    st.markdown("### Combinación con repetición")
+    st.latex(r"CR(n,r)=\binom{n+r-1}{r}")
+
+    st.markdown("## 7. Teorema de Bayes")
+    st.latex(r"P(A_i|B)=\frac{P(A_i)P(B|A_i)}{\sum_{j=1}^{n}P(A_j)P(B|A_j)}")
+
+    st.markdown("## 8. Variable aleatoria discreta")
+    st.latex(r"E(X)=\sum x_i P(x_i)")
+    st.latex(r"E(X^2)=\sum x_i^2 P(x_i)")
+    st.latex(r"Var(X)=E(X^2)-[E(X)]^2")
+    st.latex(r"\sigma_X = \sqrt{Var(X)}")
+
+    st.markdown("## 9. Distribuciones probabilísticas")
+
+    st.markdown("### Normal")
+    st.latex(r"f(x)=\frac{1}{\sigma\sqrt{2\pi}}e^{-\frac{1}{2}\left(\frac{x-\mu}{\sigma}\right)^2}")
+
+    st.markdown("### Binomial")
+    st.latex(r"P(X=k)=\binom{n}{k}p^k(1-p)^{n-k}")
+
+    st.markdown("### Poisson")
+    st.latex(r"P(X=k)=\frac{e^{-\lambda}\lambda^k}{k!}")
+
+    st.markdown("### Exponencial")
+    st.latex(r"f(x)=\lambda e^{-\lambda x}, \quad x\geq 0")
+    st.latex(r"P(X\le x)=1-e^{-\lambda x}")
+    st.latex(r"P(X>x)=e^{-\lambda x}")
+
+# ============================================================
+# MÓDULOS ACADÉMICOS ADICIONALES
+# ============================================================
+
+elif categoria == "Indicadores Estadísticos":
+    render_section_header("Indicadores Estadísticos", "Medidas de tendencia, dispersión, forma y posición, con datos manuales o archivo.", "🧮")
+    st.markdown("<div class='glass-card'>", unsafe_allow_html=True)
+
+    sub = st.selectbox("Seleccione categoría", ["Tendencia Central", "Dispersión", "Forma (Pearson)", "Posición"])
+    fuente = st.radio("Fuente de datos", ["Datos manuales", "Archivo CSV o Excel"], horizontal=True)
+
+    if fuente == "Datos manuales":
+        if sub in ["Tendencia Central", "Dispersión", "Posición"]:
+            d_str = st.text_input("Ingrese datos separados por coma", "12, 14, 10, 15, 14, 18")
+            try:
+                datos = sorted([float(x) for x in d_str.replace(",", " ").split() if x.strip()])
+                if len(datos) >= 2:
+                    if sub == "Tendencia Central":
+                        m = statistics.mean(datos)
+                        med = statistics.median(datos)
+                        modas = calcular_moda(datos)
+                        c1, c2, c3 = st.columns(3)
+                        c1.metric("Media", f"{m:.4f}")
+                        c2.metric("Mediana", f"{med:.4f}")
+                        c3.metric("Moda(s)", ", ".join(f"{x:g}" for x in modas))
+                    elif sub == "Dispersión":
+                        t_d = st.radio("Contexto", ["Muestra", "Población"], horizontal=True)
+                        m = statistics.mean(datos)
+                        dev = statistics.pstdev(datos) if t_d == "Población" else statistics.stdev(datos)
+                        c1, c2, c3 = st.columns(3)
+                        c1.metric("Varianza", f"{dev**2:.4f}")
+                        c2.metric("Desv. Est.", f"{dev:.4f}")
+                        c3.metric("CV", f"{(dev/m*100):.2f}%")
+                    elif sub == "Posición":
+                        pk = st.number_input("Percentil (k)", 1, 99, 90)
+                        st.metric(f"P{pk}", f"{calcular_percentil(datos, pk):.4f}")
+            except Exception as e:
+                st.warning(f"Revisa los datos ingresados. {e}")
+
+        elif sub == "Forma (Pearson)":
+            c1, c2, c3 = st.columns(3)
+            m = c1.number_input("Media", value=15.0)
+            mo = c2.number_input("Moda", value=14.0)
+            s = c3.number_input("Desviación", min_value=0.1, value=2.0)
+            asimetria = (3 * (m - mo)) / s
+            st.metric("Asimetría", f"{asimetria:.4f}")
+
+    else:
+        archivo = st.file_uploader("Sube un archivo CSV o Excel", type=["csv", "xlsx", "xls"], key="indicadores_file")
+        if archivo is not None:
+            try:
+                df = leer_csv_excel(archivo)
+                st.success("Archivo cargado correctamente.")
+                st.dataframe(df.head())
+
+                numericas = df.select_dtypes(include=["int64", "float64"]).columns.tolist()
+                categoricas = df.columns.tolist()
+
+                if sub in ["Tendencia Central", "Dispersión", "Posición"]:
+                    if len(numericas) == 0:
+                        st.error("No hay columnas numéricas para analizar.")
+                    else:
+                        col_num = st.selectbox("Selecciona una variable numérica", numericas)
+                        datos = df[col_num].dropna().astype(float).tolist()
+                        datos_ordenados = sorted(datos)
+
+                        if sub == "Tendencia Central":
+                            m = statistics.mean(datos)
+                            med = statistics.median(datos)
+                            modas = calcular_moda(datos)
+                            c1, c2, c3 = st.columns(3)
+                            c1.metric("Media", f"{m:.4f}")
+                            c2.metric("Mediana", f"{med:.4f}")
+                            c3.metric("Moda(s)", ", ".join(f"{x:g}" for x in modas[:10]))
+
+                        elif sub == "Dispersión":
+                            t_d = st.radio("Contexto", ["Muestra", "Población"], horizontal=True, key="disp_arch")
+                            m = statistics.mean(datos)
+                            dev = statistics.pstdev(datos) if t_d == "Población" else statistics.stdev(datos)
+                            c1, c2, c3 = st.columns(3)
+                            c1.metric("Varianza", f"{dev**2:.4f}")
+                            c2.metric("Desv. Est.", f"{dev:.4f}")
+                            c3.metric("CV", f"{(dev/m*100):.2f}%")
+
+                        elif sub == "Posición":
+                            pk = st.number_input("Percentil (k)", 1, 99, 90, key="pos_arch")
+                            st.metric(f"P{pk}", f"{calcular_percentil(datos_ordenados, pk):.4f}")
+
+                elif sub == "Forma (Pearson)":
+                    if len(numericas) == 0:
+                        st.error("No hay columnas numéricas para analizar.")
+                    else:
+                        col_num = st.selectbox("Selecciona una variable numérica", numericas, key="forma_arch")
+                        datos = df[col_num].dropna().astype(float).tolist()
+                        media = statistics.mean(datos)
+                        modas = calcular_moda(datos)
+                        moda = modas[0]
+                        desv = statistics.stdev(datos) if len(datos) > 1 else 0
+                        if desv == 0:
+                            st.warning("La desviación es 0, no se puede calcular asimetría.")
+                        else:
+                            asimetria = (3 * (media - moda)) / desv
+                            st.metric("Asimetría de Pearson", f"{asimetria:.4f}")
+
+                st.markdown("### Gráficos")
+                tipo_graf = st.selectbox("Tipo de gráfico", ["Gráfico de barras", "Gráfico de torta"])
+                col_cat = st.selectbox("Variable categórica para graficar", categoricas)
+
+                freq = df[col_cat].astype(str).value_counts().reset_index()
+                freq.columns = [col_cat, "Frecuencia"]
+
+                if tipo_graf == "Gráfico de barras":
+                    fig, ax = plt.subplots(figsize=(8, 5))
+                    ax.bar(freq[col_cat], freq["Frecuencia"])
+                    ax.set_title(f"Frecuencia de {col_cat}")
+                    ax.set_xlabel(col_cat)
+                    ax.set_ylabel("Frecuencia")
+                    plt.xticks(rotation=45, ha="right")
+                    plt.tight_layout()
+                    st.pyplot(fig)
+                else:
+                    fig, ax = plt.subplots(figsize=(7, 7))
+                    ax.pie(freq["Frecuencia"], labels=freq[col_cat], autopct="%1.1f%%", startangle=90)
+                    ax.set_title(f"Distribución de {col_cat}")
+                    st.pyplot(fig)
+
+            except Exception as e:
+                st.error(f"No se pudo procesar el archivo: {e}")
+
+    st.markdown("</div>", unsafe_allow_html=True)
+
+elif categoria == "Reglas de Conteo":
+    render_section_header("Reglas de Conteo", "Permutaciones, variaciones y combinaciones.", "🔢")
+    st.markdown("<div class='glass-card'>", unsafe_allow_html=True)
+
+    mod = st.selectbox(
+        "Modelo de conteo",
+        [
+            "Permutación (Sin repetición)",
+            "Permutación con repetición",
+            "Combinación (Sin repetición)",
+            "Combinación con repetición",
+            "Variación (Sin repetición)",
+            "Variación con repetición"
+        ]
+    )
+
+    if "Permutación (Sin repetición)" in mod:
+        st.latex(r"P(n,r) = \frac{n!}{(n-r)!}")
+    elif "Permutación con repetición" in mod:
+        st.latex(r"P'_n(r) = n^r")
+    elif "Combinación (Sin repetición)" in mod:
+        st.latex(r"C_n^r = \binom{n}{r} = \frac{n!}{r!(n-r)!}")
+    elif "Combinación con repetición" in mod:
+        st.latex(r"CR_n^r = \binom{n+r-1}{r}")
+    elif "Variación (Sin repetición)" in mod:
+        st.latex(r"V_n^r = \frac{n!}{(n-r)!}")
+    elif "Variación con repetición" in mod:
+        st.latex(r"VR_n^r = n^r")
+
+    c1, c2 = st.columns(2)
+    with c1:
+        n = st.number_input("n", 1, value=10)
+    with c2:
+        max_r = n if "(Sin repetición)" in mod else None
+        r = st.number_input("r", 0, max_value=max_r, value=min(3, n))
+
+    res = 0
+    if "Permutación (Sin repetición)" in mod:
+        res = variacion_sin_rep(n, r)
+    elif "Permutación con repetición" in mod:
+        res = variacion_con_rep(n, r)
+    elif "Combinación con repetición" in mod:
+        res = combinacion_con_rep(n, r)
+    elif "Combinación (Sin repetición)" in mod:
+        res = combinacion_sin_rep(n, r)
+    elif "Variación con repetición" in mod:
+        res = variacion_con_rep(n, r)
+    else:
+        res = variacion_sin_rep(n, r)
+
+    st.metric("Resultado", f"{res:,}")
+    st.markdown("</div>", unsafe_allow_html=True)
+
+elif categoria == "Teorema de Bayes":
+    render_section_header("Teorema de Bayes", "Probabilidades a posteriori.", "🧠")
+    nh = st.number_input("Número de hipótesis", 2, 5, 2)
+    st.markdown("<div class='glass-card'>", unsafe_allow_html=True)
+
+    p1, p2 = [], []
+    for i in range(nh):
+        c1, c2 = st.columns(2)
+        p1.append(c1.number_input(f"P(A{i+1})", 0.0, 1.0, 1.0/nh, key=f"bayes_a_{i}"))
+        p2.append(c2.number_input(f"P(B|A{i+1})", 0.0, 1.0, 0.5, key=f"bayes_b_{i}"))
+
+    if abs(sum(p1) - 1.0) < 1e-4:
+        pb = sum(a * b for a, b in zip(p1, p2))
+        st.metric("P(B)", f"{pb:.4f}")
+    else:
+        st.warning("Las probabilidades P(Ai) deben sumar 1.")
+    st.markdown("</div>", unsafe_allow_html=True)
+
+elif categoria == "Variable Aleatoria":
+    render_section_header("Variable Aleatoria", "Momentos y distribución discreta.", "🎲")
+    nv = st.number_input("Número de valores", 1, 20, 3)
+    st.markdown("<div class='glass-card'>", unsafe_allow_html=True)
+
+    vx, vp = [], []
+    for i in range(nv):
+        c1, c2 = st.columns(2)
+        vx.append(c1.number_input(f"Valor x_{i+1}", value=float(i), key=f"va_x_{i}"))
+        default_p = 0.0
+        if i == nv - 1:
+            suma_previa = sum(vp)
+            default_p = max(0.0, 1.0 - suma_previa)
+        else:
+            default_p = 1.0 / nv
+        vp.append(c2.number_input(f"Probabilidad P(x_{i+1})", 0.0, 1.0, default_p, format="%.4f", key=f"va_p_{i}"))
+
+    ex = sum(x * p for x, p in zip(vx, vp))
+    ex2 = sum((x**2) * p for x, p in zip(vx, vp))
+    var_x = max(0.0, ex2 - ex**2)
+    sigma_x = math.sqrt(var_x)
+
+    indices = list(range(1, nv + 1))
+    ei = sum(i * p for i, p in zip(indices, vp))
+    ei2 = sum((i**2) * p for i, p in zip(indices, vp))
+    var_i = max(0.0, ei2 - ei**2)
+    sigma_i = math.sqrt(var_i)
+
+    df_data = {
+        "i": indices,
+        "x": vx,
+        "P(x)": vp,
+        "x·P(x)": [x * p for x, p in zip(vx, vp)],
+        "i·P(x)": [i * p for i, p in zip(indices, vp)],
+        "x²·P(x)": [(x**2) * p for x, p in zip(vx, vp)],
+        "i²·P(x)": [(i**2) * p for i, p in zip(indices, vp)]
+    }
+    df_va = pd.DataFrame(df_data)
+    st.dataframe(df_va)
+
+    c1, c2 = st.columns(2)
+    with c1:
+        st.metric("Esperanza E(X)", f"{ex:.6f}")
+        st.metric("Varianza Var(X)", f"{var_x:.6f}")
+        st.metric("Desv. Estándar σ", f"{sigma_x:.6f}")
+    with c2:
+        st.metric("Esperanza E(i)", f"{ei:.6f}")
+        st.metric("Varianza Var(i)", f"{var_i:.6f}")
+        st.metric("Desv. Estándar σ(i)", f"{sigma_i:.6f}")
+
+    st.markdown("</div>", unsafe_allow_html=True)
+
+elif categoria == "Distribuciones Probabilísticas":
+    render_section_header("Distribuciones Probabilísticas", "Normal, Binomial, Poisson y Exponencial.", "📈")
+    st.markdown("<div class='glass-card'>", unsafe_allow_html=True)
+
+    dt = st.selectbox("Modelo", ["Normal", "Binomial", "Poisson", "Exponencial"])
+    tipo_calc = st.selectbox("Tipo de probabilidad", ["Puntual / Densidad", "Acumulada Inferior (P ≤ x)", "Acumulada Superior (P > x)", "Intervalo (P [a, b])"])
+
+    res = 0.0
+    res_label = "Resultado"
+
+    c1, c2 = st.columns(2)
+
+    if dt == "Normal":
+        mu = c1.number_input("Media (μ)", value=0.0)
+        sigma = c2.number_input("Desv. Estándar (σ)", 0.001, value=1.0)
+        if tipo_calc == "Intervalo (P [a, b])":
+            a = c1.number_input("Límite inferior (a)", value=-1.0)
+            b = c2.number_input("Límite superior (b)", value=1.0)
+            res = cdf_normal_estandar((b - mu) / sigma) - cdf_normal_estandar((a - mu) / sigma)
+            res_label = f"P({a} ≤ X ≤ {b})"
+        else:
+            x = st.number_input("Valor (x)", value=0.0)
+            if "Puntual" in tipo_calc:
+                res = pdf_normal(x, mu, sigma)
+                res_label = f"f({x}) [Densidad]"
+            elif "Inferior" in tipo_calc:
+                res = cdf_normal_estandar((x - mu) / sigma)
+                res_label = f"P(X ≤ {x})"
+            else:
+                res = 1 - cdf_normal_estandar((x - mu) / sigma)
+                res_label = f"P(X > {x})"
+
+    elif dt == "Binomial":
+        n = c1.number_input("Ensayos (n)", 1, value=10)
+        p = c2.number_input("Prob. éxito (p)", 0.0, 1.0, 0.5)
+        if tipo_calc == "Intervalo (P [a, b])":
+            a = c1.number_input("Mínimo éxitos (a)", 0, n, 0)
+            b = c2.number_input("Máximo éxitos (b)", 0, n, n)
+            res = sum(probabilidad_binomial(i, n, p) for i in range(int(a), int(b) + 1))
+            res_label = f"P({a} ≤ X ≤ {b})"
+        else:
+            k = st.number_input("Éxitos (k)", 0, n, 0)
+            if "Puntual" in tipo_calc:
+                res = probabilidad_binomial(int(k), n, p)
+                res_label = f"P(X = {k})"
+            elif "Inferior" in tipo_calc:
+                res = sum(probabilidad_binomial(i, n, p) for i in range(int(k) + 1))
+                res_label = f"P(X ≤ {k})"
+            else:
+                res = 1 - sum(probabilidad_binomial(i, n, p) for i in range(int(k) + 1))
+                res_label = f"P(X > {k})"
+
+    elif dt == "Poisson":
+        lam = c1.number_input("Tasa promedio (λ)", 0.001, value=5.0)
+        if tipo_calc == "Intervalo (P [a, b])":
+            a = c1.number_input("Mínimo (a)", 0)
+            b = c2.number_input("Máximo (b)", 0)
+            res = sum(probabilidad_poisson(i, lam) for i in range(int(a), int(b) + 1))
+            res_label = f"P({a} ≤ X ≤ {b})"
+        else:
+            k = st.number_input("Ocurrencias (k)", 0)
+            if "Puntual" in tipo_calc:
+                res = probabilidad_poisson(int(k), lam)
+                res_label = f"P(X = {k})"
+            elif "Inferior" in tipo_calc:
+                res = sum(probabilidad_poisson(i, lam) for i in range(int(k) + 1))
+                res_label = f"P(X ≤ {k})"
+            else:
+                res = 1 - sum(probabilidad_poisson(i, lam) for i in range(int(k) + 1))
+                res_label = f"P(X > {k})"
+
+    elif dt == "Exponencial":
+        lam = c1.number_input("Tasa (λ)", 0.001, value=1.0)
+        if tipo_calc == "Intervalo (P [a, b])":
+            a = c1.number_input("Inicio (a)", 0.0)
+            b = c2.number_input("Fin (b)", 0.0)
+            res = math.exp(-lam * a) - math.exp(-lam * b)
+            res_label = f"P({a} ≤ X ≤ {b})"
+        else:
+            x = st.number_input("Valor (x)", 0.0)
+            if "Puntual" in tipo_calc:
+                res = lam * math.exp(-lam * x)
+                res_label = f"f({x}) [Densidad]"
+            elif "Inferior" in tipo_calc:
+                res = 1 - math.exp(-lam * x)
+                res_label = f"P(X ≤ {x})"
+            else:
+                res = math.exp(-lam * x)
+                res_label = f"P(X > {x})"
+
+    st.metric(res_label, f"{res:.10f}")
+    st.markdown("</div>", unsafe_allow_html=True)
+
+elif categoria == "Intervalos de Confianza (Académicos)":
+    render_section_header("Intervalos de Confianza (Académicos)", "Lógica Z o t según la información disponible.", "📏")
+    st.markdown("<div class='glass-card'>", unsafe_allow_html=True)
+
+    c1, c2 = st.columns(2)
+    with c1:
+        n = st.number_input("Tamaño de muestra (n)", 2, value=30, key="acad_n")
+        m = st.number_input("Media muestral (x̄)", value=100.0, key="acad_m")
+        c = st.slider("Nivel de confianza", 0.80, 0.99, 0.95, 0.01, key="acad_c")
+    with c2:
+        sigma_conocida = st.radio("¿Conoce σ?", ["Sí, es conocida (σ)", "No, usar muestral (s)"], index=1, key="acad_sigma")
+        label_s = "Desviación estándar (σ)" if "Sí" in sigma_conocida else "Desviación estándar (s)"
+        s = st.number_input(label_s, 0.01, value=15.0, key="acad_s")
+
+    es_sigma = "Sí" in sigma_conocida
+    if es_sigma:
+        v_critico = get_z_value(c)
+        razon = "Se utiliza Z porque la desviación estándar poblacional es conocida."
+    else:
+        if n >= 30:
+            v_critico = get_z_value(c)
+            razon = f"Se utiliza Z como aproximación porque n={n} y n ≥ 30."
+        else:
+            v_critico = get_t_value(c, n - 1)
+            razon = f"Se utiliza t de Student porque σ es desconocida y n={n} es pequeña."
+
+    err = v_critico * (s / math.sqrt(n))
+    li, ls = m - err, m + err
+
+    st.info(razon)
+    c1, c2, c3 = st.columns(3)
+    c1.metric("Valor crítico", f"{v_critico:.4f}")
+    c2.metric("Margen de error", f"{err:.4f}")
+    c3.metric("Error estándar", f"{(s/math.sqrt(n)):.4f}")
+    st.success(f"IC = [{li:.4f}, {ls:.4f}]")
+    st.markdown("</div>", unsafe_allow_html=True)
+
+elif categoria == "Historial de Cálculos":
+    render_section_header("Historial de Cálculos", "Registro local de cálculos realizados.", "📜")
+    path = "historial_calculos.json"
+    if os.path.exists(path):
+        with open(path, "r", encoding="utf-8") as f:
+            registros = [json.loads(line) for line in f]
+        for reg in reversed(registros):
+            with st.expander(f"🕒 {reg['fecha']} - {reg['modulo']}"):
+                st.json(reg["inputs"])
+        if st.button("🗑️ Borrar historial"):
+            os.remove(path)
+            st.rerun()
+    else:
+        st.info("No hay historial guardado.")
 
 
