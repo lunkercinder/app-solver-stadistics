@@ -403,16 +403,16 @@ def registrar_calculo(modulo, inputs_dict):
 
 MENU = [
     "Inicio",
-    "Distribuciones de muestreo",
-    "Pruebas de hipótesis",
-    "Correlación",
     "Indicadores Estadísticos",
     "Reglas de Conteo",
     "Teorema de Bayes",
     "Variable Aleatoria",
     "Distribuciones Probabilísticas",
+    "Distribuciones de muestreo",
     "Intervalos de confianza",
     "Intervalos de Confianza_2",
+    "Pruebas de hipótesis",
+    "Correlación",
     "Base de datos",  
     "Fórmulas",
     "Historial de Cálculos"
