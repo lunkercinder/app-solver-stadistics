@@ -337,14 +337,14 @@ categoria = st.sidebar.radio(
         "Intervalos de confianza",
         "Pruebas de hipótesis",
         "Correlación",
-        "Base de datos",
-        "Fórmulas",
+        "Base de datos",   
         "Indicadores Estadísticos",
         "Reglas de Conteo",
         "Teorema de Bayes",
         "Variable Aleatoria",
         "Distribuciones Probabilísticas",
         "Intervalos de Confianza (Académicos)",
+        "Fórmulas",
         "Historial de Cálculos"
     ]
 )
